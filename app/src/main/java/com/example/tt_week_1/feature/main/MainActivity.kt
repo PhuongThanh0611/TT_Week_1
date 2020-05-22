@@ -1,5 +1,6 @@
 package com.example.tt_week_1.feature.main
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +10,6 @@ import com.example.tt_week_1.R
 import com.example.tt_week_1.RepositoryMovie
 import com.example.tt_week_1.data.Result
 import com.example.tt_week_1.data.ResultApi
-import com.example.tt_week_1.ext.ConstExt
 import com.example.tt_week_1.feature.main.adapter.AdapterMovie
 import com.example.tt_week_1.feature.main.adapter.MovieListener
 import com.example.tt_week_1.service.APIMovie
@@ -18,7 +18,11 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MovieListener {
+
     private var mAdapter: AdapterMovie? = null
+    private var mCount: Int = 0
+    private var mapList = HashMap<Int, Int>()
+    private var currentPage = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,7 +33,6 @@ class MainActivity : AppCompatActivity(), MovieListener {
         requestMovie(1)
     }
 
-    private var currentPage = 1
     private fun setEvents() {
         swipeContainer.setOnRefreshListener {
             requestMovie(1)
@@ -72,25 +75,42 @@ class MainActivity : AppCompatActivity(), MovieListener {
 
     //Xử lí dữ lieu request thất bại
     private fun handlerErrorMovie(error: Throwable) {
-        Log.e(ConstExt.TAG, "handlerErrorAndroidVersion: ${error.localizedMessage}")
+        Log.e(
+            com.example.tt_week_1.ext.TAG,
+            "handlerErrorAndroidVersion: ${error.localizedMessage}"
+        )
         Toast.makeText(this, "Error ${error.localizedMessage}", Toast.LENGTH_SHORT).show()
     }
 
     override fun onClickItem(item: Result) {
 
         val intent = Intent(this, MainActivityTrailer::class.java)
-            intent.putExtra("id",item.id)
-            intent.putExtra("title",item.title)
-            intent.putExtra("date",item.releaseDate)
-            intent.putExtra("voteAverage",item.voteAverage)
-            intent.putExtra("overview",item.overview)
+        intent.putExtra("id", item.id)
+        intent.putExtra("title", item.title)
+        intent.putExtra("date", item.releaseDate)
+        intent.putExtra("voteAverage", item.voteAverage)
+        intent.putExtra("overview", item.overview)
 
-            startActivity(intent)
-           // finish()
+        if (mapList.containsKey(item.id))
+            intent.putExtra("tgian", mapList[item.id])
+        startActivityForResult(intent, 999)
     }
-//load thêm trang sau khi danh sách phim sắp hết
+
+    //load thêm trang sau khi danh sách phim sắp hết
     override fun onLoadMore() {
         currentPage++
         requestMovie(currentPage)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_CANCELED && requestCode == 999) {
+            if (data != null) {
+                mCount = data.getIntExtra("counter", 0)
+                val idTv = data.getIntExtra("id", 0)
+                mapList[idTv] = mCount
+                Log.d("bbb", "$mCount $idTv")
+            }
+        }
     }
 }

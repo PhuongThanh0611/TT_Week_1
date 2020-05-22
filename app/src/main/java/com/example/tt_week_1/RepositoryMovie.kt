@@ -1,5 +1,5 @@
 package com.example.tt_week_1
-import com.example.tt_week_1.ext.ConstExt.Companion.Base_URL
+import com.example.tt_week_1.ext.Base_URL
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response

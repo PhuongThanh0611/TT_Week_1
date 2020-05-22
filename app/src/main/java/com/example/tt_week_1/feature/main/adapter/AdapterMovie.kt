@@ -12,7 +12,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.example.tt_week_1.R
 import com.example.tt_week_1.data.Result
-import com.example.tt_week_1.ext.ConstExt.Companion.Base_Img
+import com.example.tt_week_1.ext.Base_Img
 import kotlinx.android.synthetic.main.item_poster.view.*
 import kotlinx.android.synthetic.main.item_video.view.*
 

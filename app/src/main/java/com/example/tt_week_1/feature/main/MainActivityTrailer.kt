@@ -1,13 +1,15 @@
 package com.example.tt_week_1.feature.main
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.example.tt_week_1.R
 import com.example.tt_week_1.RepositoryMovie
-import com.example.tt_week_1.ext.ConstExt
-import com.example.tt_week_1.ext.ConstExt.Companion.Trailer_ApiKey
+import com.example.tt_week_1.ext.Trailer_ApiKey
+import com.example.tt_week_1.ext.Youtube_API
 import com.example.tt_week_1.service.APIMovie
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -21,17 +23,17 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
     private var resultSource: String? = null
     private var mCounter: Int = 0
     private val stateCount: String = "counter"
-
+    private var id :Int =0
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_trailer)
-        val id = intent.getIntExtra("id", 0)
+            id = intent.getIntExtra("id", 0)
         val title = intent.getStringExtra("title")
         val date = intent.getStringExtra("date")
         val voteAverage = intent.getDoubleExtra("voteAverage", 0.0) / 2
         val overview = intent.getStringExtra("overview")
-
+          mCounter=intent.getIntExtra("tgian",0)
         if (savedInstanceState != null) {
             mCounter = savedInstanceState.getInt(stateCount)
         }
@@ -41,8 +43,7 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
         rt_star.rating = voteAverage.toFloat()
         txtOverview.text = overview
 
-        player_trailer.initialize(ConstExt.Youtube_API, this)
-
+        player_trailer.initialize(Youtube_API, this)
         //set event
         requestTrailer(id)
     }
@@ -50,7 +51,6 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
     //lưu trạng thái video
     override fun onSaveInstanceState(p0: Bundle) {
         super.onSaveInstanceState(p0)
-        // player?.currentTimeMillis
         player?.currentTimeMillis?.let { p0.putInt(stateCount, it) }
 
     }
@@ -76,7 +76,10 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
                         .show()
                 }
             )
+
+
     }
+
 
     override fun onInitializationSuccess(
         p0: YouTubePlayer.Provider?,
@@ -101,6 +104,14 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
         p1: YouTubeInitializationResult?
     ) {
 
+    }
+// khi chọn cancel
+    override fun onBackPressed() {
+        val i = Intent()
+        i.putExtra(stateCount,player?.currentTimeMillis)
+        i.putExtra("id",id)
+        setResult(Activity.RESULT_CANCELED,i)
+        super.onBackPressed()
     }
 }
 

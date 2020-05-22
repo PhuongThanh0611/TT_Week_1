@@ -6,11 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.tt_week_1.R
 import com.example.tt_week_1.data.Youtube
-import com.example.tt_week_1.ext.ConstExt.Companion.Youtube_API
+import com.example.tt_week_1.ext.Youtube_API
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
-import com.google.android.youtube.player.YouTubeThumbnailView
-import kotlinx.android.synthetic.main.activity_main_trailer.*
 import kotlinx.android.synthetic.main.activity_main_trailer.view.*
 
 class AdapterTrailer(private var listTrailer: List<Youtube>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
