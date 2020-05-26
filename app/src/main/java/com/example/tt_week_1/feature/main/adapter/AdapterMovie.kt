@@ -16,7 +16,7 @@ import com.example.tt_week_1.ext.Base_Img
 import kotlinx.android.synthetic.main.item_poster.view.*
 import kotlinx.android.synthetic.main.item_video.view.*
 
-class AdapterMovie (private val listMovies: List<Result>, private var listener: MovieListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterMovie (private val listMovies: ArrayList<Result>, private var listener: MovieListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     //private val itemClickListener: ItemClickListener? = null
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):RecyclerView.ViewHolder {
         return if(viewType ==0){
@@ -30,7 +30,15 @@ class AdapterMovie (private val listMovies: List<Result>, private var listener: 
 
     override fun getItemCount() = listMovies.count()
 
-
+    fun AddList(  listMovies: List<Result>){
+        this.listMovies.apply {
+            addAll(listMovies)
+            notifyDataSetChanged()
+        }
+    }
+    fun removeData(){
+        listMovies.clear()
+    }
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(position==listMovies.size-5) listener.onLoadMore()
         // tra ve view layout
@@ -55,7 +63,7 @@ class AdapterMovie (private val listMovies: List<Result>, private var listener: 
 
     class ViewHolderPoster(private val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(android: Result,itemClickListener: MovieListener) {
-           // itemView.img_poster = android.
+            // itemView.img_poster = android.
             Glide.with(view.context)
                 .load(Base_Img+android.posterPath)
                 .transition(DrawableTransitionOptions.withCrossFade())

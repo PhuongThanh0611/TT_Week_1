@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.tt_week_1.R
 import com.example.tt_week_1.RepositoryMovie
 import com.example.tt_week_1.data.Result
-import com.example.tt_week_1.data.ResultApi
 import com.example.tt_week_1.feature.main.adapter.AdapterMovie
 import com.example.tt_week_1.feature.main.adapter.MovieListener
 import com.example.tt_week_1.service.APIMovie
@@ -19,7 +18,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), MovieListener {
 
-    private var mAdapter: AdapterMovie? = null
+   /* private val mAdapter: AdapterMovie by lazy {
+        AdapterMovie(arrayListOf(),this)
+    }*/
+   private lateinit var mAdapter: AdapterMovie
     private var mCount: Int = 0
     private var mapList = HashMap<Int, Int>()
     private var currentPage = 1
@@ -37,12 +39,16 @@ class MainActivity : AppCompatActivity(), MovieListener {
         swipeContainer.setOnRefreshListener {
             requestMovie(1)
             swipeContainer.isRefreshing = false
+            mAdapter.removeData()
         }
     }
 
     // khởi tao recyclerview
     private fun initRecyclerView() {
+        mAdapter = AdapterMovie(arrayListOf(),this)
+        rvMovie.adapter =mAdapter
         rvMovie.setHasFixedSize(true)
+
     }
 
     private fun requestMovie(page: Int) {
@@ -57,7 +63,8 @@ class MainActivity : AppCompatActivity(), MovieListener {
                 { result ->
                     //request thành công
                     Log.d("arrmovie", result.toString())
-                    handleSuccessMovie(result)
+                    mAdapter.AddList(result.results)
+                    /*handleSuccessMovie(result)*/
                 },
                 { error ->
                     //request thất bai
@@ -67,11 +74,13 @@ class MainActivity : AppCompatActivity(), MovieListener {
     }
 
     //Xử lí dữ liệu khi request thành công
+/*
     private fun handleSuccessMovie(result: ResultApi) {
         mAdapter = AdapterMovie(result.results, this)
         rvMovie.adapter = mAdapter
         mAdapter?.notifyDataSetChanged()
     }
+*/
 
     //Xử lí dữ lieu request thất bại
     private fun handlerErrorMovie(error: Throwable) {

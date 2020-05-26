@@ -34,18 +34,22 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
         val voteAverage = intent.getDoubleExtra("voteAverage", 0.0) / 2
         val overview = intent.getStringExtra("overview")
           mCounter=intent.getIntExtra("tgian",0)
-        if (savedInstanceState != null) {
-            mCounter = savedInstanceState.getInt(stateCount)
-        }
-
         txtTitle.text = title
         txtDate.text = "Release Date :$date"
         rt_star.rating = voteAverage.toFloat()
         txtOverview.text = overview
 
         player_trailer.initialize(Youtube_API, this)
+        if (savedInstanceState != null) {
+            mCounter = savedInstanceState.getInt(stateCount)
+            player?.play()
+        }else {
+            requestTrailer(id)
+
+        }
+
         //set event
-        requestTrailer(id)
+        /*requestTrailer(id)*/
     }
 
     //lưu trạng thái video
@@ -80,7 +84,6 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
 
     }
 
-
     override fun onInitializationSuccess(
         p0: YouTubePlayer.Provider?,
         p1: YouTubePlayer?,
@@ -89,9 +92,7 @@ class MainActivityTrailer : YouTubeBaseActivity(), YouTubePlayer.OnInitializedLi
         //trường hợp source gọi xong trc
         player = p1
         if (resultSource != null) {
-            /*p1?.cueVideo(resultSource)
 
-            player?.seekToMillis(mCounter)*/
             player?.cueVideo(resultSource, mCounter)
             if(mCounter != 0)
                 player?.play()
